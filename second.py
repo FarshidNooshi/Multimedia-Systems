@@ -3,25 +3,25 @@
 from manim import *
 
 
-class DrawMatrix(ThreeDScene):
+class DrawMultiMedia(ThreeDScene):
     def construct(self):
         self.add_sound('assets/audio.mp3')
         title = Tex(r"In The Name Of GOD")
-        basel = Tex(r"Creating a tensor with small cubes, by Farshid Nooshi")
-        VGroup(title, basel).arrange(DOWN)
+        description = Tex(r"Creating a tensor with small cubes, by Farshid Nooshi")
+        VGroup(title, description).arrange(DOWN)
         self.play(
             Write(title),
-            FadeIn(basel, shift=DOWN),
+            FadeIn(description, shift=DOWN),
         )
         self.wait()
 
         transform_title = Tex("Creating a tensor with small cubes, by Farshid Nooshi")
         transform_title.to_corner(UL)
         self.play(
-            Transform(basel, transform_title),
+            Transform(description, transform_title),
             LaggedStart(*[FadeOut(obj, shift=DOWN) for obj in title]),
         )
-        self.add_fixed_in_frame_mobjects(basel)
+        self.add_fixed_in_frame_mobjects(description)
         self.wait()
         self.set_camera_orientation(phi=75 * DEGREES, theta=30 * DEGREES)
         transform_title.set_opacity(0)
@@ -71,7 +71,7 @@ class DrawMatrix(ThreeDScene):
         self.play(row3.animate.set_opacity(0.5))
         self.wait()
 
-        # Matri1
+        # Matrix 1
         mat1 = VGroup(row1, row2, row3)
         self.play(Rotate(mat1, 2 * PI), run_time=5)
         self.wait()
