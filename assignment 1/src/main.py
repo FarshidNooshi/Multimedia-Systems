@@ -5,7 +5,7 @@ from manim import *
 
 class DrawMultiMedia(ThreeDScene):
     def construct(self):
-        self.add_sound('assets/audio.mp3')
+        self.add_sound('../assets/audio.mp3')
         title = Tex(r"In The Name Of GOD")
         description = Tex(r"Creating a tensor with small cubes, by Farshid Nooshi")
         VGroup(title, description).arrange(DOWN)
