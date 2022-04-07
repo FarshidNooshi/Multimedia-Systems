@@ -21,8 +21,7 @@ def section_one():
     image = image_read()
     print('mode of initial image: ' + image.mode)
     im_arr = np.array(image)
-    gray = rgb2gray(im_arr)
-    gray = gray.astype(int)
+    gray = rgb2gray(im_arr).astype(int)
     plt.imshow(gray, cmap='gray', vmin=0, vmax=255)
     plt.show()
     return gray
@@ -55,16 +54,17 @@ def section_four(*args, **kwargs):
             kwargs['image_height'] * kwargs['image_weight']))
 
 
-def section_five():
+def section_five(**kwargs):
     cumulative_sum, data = section_three()
     new_image_array = np.zeros(data.shape)
     for i in range(data.shape[0]):
         for j in range(data.shape[1]):
-            new_image_array[i][j] = section_four(data[i][j], color_levels=len(cumulative_sum.keys()),
+            new_image_array[i][j] = section_four(data[i][j], color_levels=kwargs.get('number_of_levels',
+                                                                                     len(cumulative_sum.keys())),
                                                  cumulative_sum=cumulative_sum, image_height=data.shape[0],
                                                  image_weight=data.shape[1])
     plt.imshow(new_image_array, cmap='gray', vmin=0, vmax=255)
     plt.show()
 
 
-section_five()
+section_five(number_of_levels=256)
