@@ -3,7 +3,6 @@ import collections
 import numpy as np
 from PIL import Image
 from matplotlib import pyplot as plt
-from numpy import shape
 
 
 def rgb2gray(rgb):
@@ -64,7 +63,8 @@ def section_five():
             new_image_array[i][j] = section_four(data[i][j], color_levels=len(cumulative_sum.keys()),
                                                  cumulative_sum=cumulative_sum, image_height=data.shape[0],
                                                  image_weight=data.shape[1])
-    print(new_image_array)
+    plt.imshow(new_image_array, cmap='gray', vmin=0, vmax=255)
+    plt.show()
 
 
 section_five()
