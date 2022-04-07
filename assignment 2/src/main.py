@@ -9,9 +9,14 @@ def rgb2gray(rgb):
     return np.dot(rgb[..., :3], [0.299, 0.5870, 0.1140])
 
 
-def image_read():
+def get_address():
     # address = input('please enter address of image: ')
-    address = '/Volumes/Farshid_SSD/Projects/University/MultiMediaSystems/assignment 2/assets/image.png'
+    address = '/Volumes/Farshid_SSD/Projects/University/MultiMediaSystems/assignment 2/assets'
+    return address
+
+
+def image_read():
+    address = get_address() + '/image.png'
     image = Image.open(address)
     print('for test, pixel at position(1, 25) is ' + image.getpixel((1, 25)).__str__())
     return image
@@ -65,6 +70,13 @@ def section_five(**kwargs):
                                                  image_weight=data.shape[1])
     plt.imshow(new_image_array, cmap='gray', vmin=0, vmax=255)
     plt.show()
+    save_image(new_image_array, kwargs.get('number_of_levels', len(cumulative_sum.keys())))
+
+
+def save_image(image_pixels, denominator=256):
+    address = get_address() + '/results'
+    image = Image.fromarray(image_pixels)
+    image.save(f'{address}/result_{denominator}')
 
 
 section_five(number_of_levels=256)
