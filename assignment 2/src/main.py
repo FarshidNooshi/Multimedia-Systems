@@ -70,13 +70,14 @@ def section_five(**kwargs):
                                                  image_weight=data.shape[1])
     plt.imshow(new_image_array, cmap='gray', vmin=0, vmax=255)
     plt.show()
-    save_image(new_image_array, kwargs.get('number_of_levels', len(cumulative_sum.keys())))
+    return new_image_array, cumulative_sum
 
 
 def save_image(image_pixels, denominator=256):
     address = get_address() + '/results'
-    image = Image.fromarray(image_pixels)
-    image.save(f'{address}/result_{denominator}')
+    image = Image.fromarray(image_pixels).convert('LA')
+    image.save(f'{address}/result_{denominator}.png')
 
 
-section_five(number_of_levels=256)
+new_image_arr, cumulative_sum_dict = section_five(number_of_levels=256)
+save_image(new_image_arr, len(cumulative_sum_dict.keys()))
