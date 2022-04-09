@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 
 
 def rgb2gray(rgb):
-    return np.dot(rgb[..., :3], [0.299, 0.5870, 0.1140])
+    return np.dot(rgb[..., :3], [0.299, 0.587, 0.114])
 
 
 def get_address():
@@ -16,6 +16,7 @@ def get_address():
 
 
 def image_read():
+    # address = get_address() + '/image2.jpg'
     address = get_address() + '/image.png'
     image = Image.open(address)
     print('for test, pixel at position(1, 25) is ' + image.getpixel((1, 25)).__str__())
@@ -32,26 +33,31 @@ def section_one():
     return gray
 
 
-def section_two(number_of_bins=40):
-    data = section_one()
-    data_1d = data.flatten()
-    plt.hist(data_1d, density=True, bins=number_of_bins)
+def section_two(data):
+    data_1d = data.flatten().astype(int)
+    count = np.zeros(256)
+    for i in range(len(data_1d)):
+        count[data_1d[i]] += 1
+    pixels = np.arange(0, 256, 1)
+    plt.bar(pixels, count)
+    plt.xlabel('color')
+    plt.ylabel('count')
     plt.show()
-    return data
+    return count
 
 
-def section_three():
-    data = section_two(number_of_bins=40)
-    data_flattened = data.flatten()
-    counter = dict(sorted(collections.Counter(data_flattened).items()))
-    counter_keys = counter.keys()
-    counter_values = counter.values()
-    counter_values = [i for i in counter_values]
+def section_three(data):
+    count = section_two(data=data)
+    data_flattened = data.flatten().astype(int)
+    counter_keys = np.arange(0, 256, 1)
+    counter_values = count
     for i in range(1, len(counter_values)):
         counter_values[i] = counter_values[i] + counter_values[i - 1]
-    counter_values = np.array(counter_values)
-    counter_keys = np.array([i for i in counter_keys])
-    return dict(zip(counter_keys, counter_values)), data
+    plt.bar(counter_keys, counter_values)
+    plt.xlabel('color')
+    plt.ylabel('count')
+    plt.show()
+    return dict(zip(counter_keys, counter_values))
 
 
 def section_four(*args, **kwargs):
@@ -60,7 +66,8 @@ def section_four(*args, **kwargs):
 
 
 def section_five(**kwargs):
-    cumulative_sum, data = section_three()
+    data = kwargs.get('data', section_one())
+    cumulative_sum = section_three(data)
     new_image_array = np.zeros(data.shape)
     for i in range(data.shape[0]):
         for j in range(data.shape[1]):
@@ -81,3 +88,5 @@ def save_image(image_pixels, denominator=256):
 
 new_image_arr, cumulative_sum_dict = section_five(number_of_levels=256)
 save_image(new_image_arr, len(cumulative_sum_dict.keys()))
+
+cumulative_sum_dict_final = section_three(data=new_image_arr)
