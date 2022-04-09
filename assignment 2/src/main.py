@@ -10,14 +10,13 @@ def rgb2gray(rgb):
 
 
 def get_address():
-    # address = input('please enter address of image: ')
-    address = '/Volumes/Farshid_SSD/Projects/University/MultiMediaSystems/assignment 2/assets'
+    address = input('please enter address of image: ')
     return address
 
 
 def image_read():
-    # address = get_address() + '/image2.jpg'
-    address = get_address() + '/image.png'
+    address = get_address() + '/image2.jpg'
+    # address = get_address() + '/image.png'
     image = Image.open(address)
     print('for test, pixel at position(1, 25) is ' + image.getpixel((1, 25)).__str__())
     return image
@@ -48,7 +47,6 @@ def section_two(data):
 
 def section_three(data):
     count = section_two(data=data)
-    data_flattened = data.flatten().astype(int)
     counter_keys = np.arange(0, 256, 1)
     counter_values = count
     for i in range(1, len(counter_values)):
@@ -80,13 +78,13 @@ def section_five(**kwargs):
     return new_image_array, cumulative_sum
 
 
-def save_image(image_pixels, denominator=256):
+def save_image(image_pixels, identifier):
     address = get_address() + '/results'
     image = Image.fromarray(image_pixels).convert('LA')
-    image.save(f'{address}/result_{denominator}.png')
+    image.save(f'{address}/result_{identifier}.png')
 
 
-new_image_arr, cumulative_sum_dict = section_five(number_of_levels=256)
-save_image(new_image_arr, len(cumulative_sum_dict.keys()))
+new_image_arr, cumulative_sum_dict = section_five()
+save_image(new_image_arr, identifier='sample')
 
 cumulative_sum_dict_final = section_three(data=new_image_arr)
