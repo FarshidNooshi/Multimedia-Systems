@@ -9,14 +9,14 @@ def rgb2gray(rgb):
     return np.dot(rgb[..., :3], [0.299, 0.587, 0.114])
 
 
-def get_address():
-    address = input('please enter address of image: ')
-    return address
+def get_address(get_input=True):
+    if get_input:
+        return input('please enter address of image: ')
+    return input('please enter address for saving result: ')
 
 
 def image_read():
-    address = get_address() + '/image2.jpg'
-    # address = get_address() + '/image.png'
+    address = get_address()
     image = Image.open(address)
     print('for test, pixel at position(1, 25) is ' + image.getpixel((1, 25)).__str__())
     return image
@@ -79,7 +79,7 @@ def section_five(**kwargs):
 
 
 def save_image(image_pixels, identifier):
-    address = get_address() + '/results'
+    address = get_address(get_input=False)
     image = Image.fromarray(image_pixels).convert('LA')
     image.save(f'{address}/result_{identifier}.png')
 
