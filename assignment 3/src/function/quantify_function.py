@@ -33,8 +33,11 @@ class QuantifyingFunction:
     def quantize(self, image):
         window_size = len(QTC[0])
         if self.check_for_padding(image, window_size):
-            y, cb, cr = self.pad_image(image, window_size)
-        y, cb, cr = self.perform_dct([y, cb, cr])
+            y_padded, cb_padded, cr_padded = self.pad_image(image, window_size)
+            y, cb, cr = self.perform_dct([y_padded, cb_padded, cr_padded], window_size)
+        else:
+            y, cb, cr = self.perform_dct([image[:, :, 0], image[:, :, 1], image[:, :, 2]], window_size)
+        return self.quantify_image([y, cb, cr], window_size)
 
     @staticmethod
     def check_for_padding(image, window_size):
@@ -73,15 +76,34 @@ class QuantifyingFunction:
             yield image_layer
 
     @staticmethod
-    def perform_dct(layers):
-        dct_3d = []
+    def perform_dct(layers, windows_size):
+        layers_dct_list = []
         height = len(layers[0])
         width = len(layers[0][0])
         for layer in layers:
             old_layer = layer.copy()
-            for i in range(0, height, 8):
-                for j in range(0, width, 8):
+            for i in range(0, height, windows_size):
+                for j in range(0, width, windows_size):
                     from scipy.fftpack import dct
-                    layer[i:i + 8, j:j + 8] = dct(old_layer[i:i + 8, j:j + 8], norm='ortho')
-            dct_3d.append(layer)
-        return dct_3d
+                    layer[i:i + windows_size, j:j + windows_size] = \
+                        dct(old_layer[i:i + windows_size, j:j + windows_size], norm='ortho')
+            layers_dct_list.append(layer)
+        return layers_dct_list
+
+    @staticmethod
+    def quantify_image(layers, windows_size):
+        layers_quantified_list = []
+        height = len(layers[0])
+        width = len(layers[0][0])
+        for num, layer in enumerate(layers):
+            old_dct_values = layer.copy()
+            for i in range(0, height, windows_size):
+                for j in range(0, width, windows_size):
+                    if num == 0:
+                        layer[i:i + windows_size, j:j + windows_size] = \
+                            np.ceil(old_dct_values[i:i + windows_size, j:j + windows_size] / QTY)
+                    else:
+                        layer[i:i + windows_size, j:j + windows_size] = \
+                            np.ceil(old_dct_values[i:i + windows_size, j:j + windows_size] / QTC)
+            layers_quantified_list.append(layer)
+        return layers_quantified_list
