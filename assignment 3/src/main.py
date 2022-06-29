@@ -6,7 +6,8 @@ from function.sample_function import SamplingFunction
 from function.utils.converter_business import ConverterBusiness
 from function.utils.file_business import FileBusiness
 from function.utils.log_business import MyLogger
-from function.quantify_function import QuantifyingFunction
+from function.quantify_function import QuantifyingFunction, QTC
+from function.rlc_function import ZigZagMovementFunction
 
 
 def calculateTotalNumberOfBitsWithoutCompression(ch_y, ch_cb, ch_cr):
@@ -22,6 +23,8 @@ if __name__ == '__main__':
     file_manager = FileBusiness(log_path)
     sampler = SamplingFunction(log_path)
     quantifier = QuantifyingFunction(log_path)
+    zigzag = ZigZagMovementFunction(log_path)
+    window_size = len(QTC)
 
     # start of the program
     logger.info('Starting program')
@@ -51,5 +54,13 @@ if __name__ == '__main__':
     logger.debug('cr shape: {}'.format(cr.shape))
 
     # zig-zag movement
+    logger.debug('zig-zag movement')
+    y = zigzag(y, window_size).astype(np.uint16)
+    cb = zigzag(cb, window_size).astype(np.uint16)
+    cr = zigzag(cr, window_size).astype(np.uint16)
+    logger.debug('y shape: {}'.format(y.shape))
+    logger.debug('cb shape: {}'.format(cb.shape))
+    logger.debug('cr shape: {}'.format(cr.shape))
 
+    # convert to bitstream
 
