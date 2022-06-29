@@ -27,8 +27,8 @@ class ConverterBusiness:
                 of shape (height, width, 3) for image in RGB format
     """
 
-    def __init__(self):
-        self.logger = MyLogger('assignment3.utils.converter_business')
+    def __init__(self, log_path):
+        self.logger = MyLogger('assignment3.utils.converter_business', log_path)
 
     @staticmethod
     def convert_to_np_array(image):
@@ -126,3 +126,25 @@ class ConverterBusiness:
         mult.putmask(mult > 255, 255)
         mult.putmask(mult < 0, 0)
         return mult.astype(np.uint8)
+
+    # @staticmethod
+    # def convert_to_y_cb_cr(image):
+    #     """
+    #     gets y, cb, cr from image separately
+    #
+    #         Parameters
+    #         ----------
+    #             image : :py:class:`np.ndarray`
+    #                 np.ndarray of shape (height, width, 3) of image
+    #
+    #         Returns
+    #         -------
+    #             y_cb_cr : tuple[:py:class:`np.ndarray`, :py:class:`np.ndarray`, :py:class:`np.ndarray`]
+    #                 This is a description of the return type
+    #                 each element in tuple is of shape (height, width) standing for y, cb, cr
+    #     """
+    #     height, width = image.shape[:2]
+    #     y = np.zeros((height, width), np.float32) + image[:, :, 0]
+    #     cr = np.zeros((height, width), np.float32) + image[:, :, 1]
+    #     cb = np.zeros((height, width), np.float32) + image[:, :, 2]
+    #     return y, cb, cr

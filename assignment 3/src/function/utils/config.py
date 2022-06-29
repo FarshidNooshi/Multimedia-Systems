@@ -3,7 +3,7 @@ import numpy
 
 class Config:
     """
-    business class for managing config
+    function class for managing config
 
         Attributes
         ----------

@@ -3,16 +3,16 @@ import os.path
 
 import numpy as np
 from PIL import Image
+from matplotlib import pyplot as plt
 
 from .log_business import MyLogger
 
 
 class FileBusiness:
-    def __init__(self):
-        self.logger = MyLogger('assignment3.utils.file_business')
+    def __init__(self, log_path):
+        self.logger = MyLogger('assignment3.utils.file_business', log_path)
 
-    @staticmethod
-    def read_image(filepath):
+    def read_image(self, filepath):
         """
         Reads an image from a filepath and returns a numpy array of shape (height, width, 3) for RGB images
 
@@ -27,6 +27,7 @@ class FileBusiness:
         """
         filepath = os.path.abspath(filepath)
         image = Image.open(filepath, 'r').convert('RGB')
+        self.logger.info('image read')
         return image
 
     def read_config(self, filepath):
@@ -43,14 +44,14 @@ class FileBusiness:
                 out : dict
                     dictionary of the config file
         """
-        file_path = os.path.join(filepath, 'data', 'config.json')
+        file_path = os.path.join(filepath, 'function', 'json', 'config.json')
         with open(file_path) as json_file:
             data = json.load(json_file)
             config = data
         self.logger.info('config file read')
         return config
 
-    def show_image(self, image):
+    def show_image(self, image, title):
         """
         Shows an image
 
@@ -60,4 +61,9 @@ class FileBusiness:
                     image with shape (height, width, 3) in RGB format
         """
         self.logger.info('Showing image')
-        return Image.fromarray((np.asarray(image) * 255).astype(np.uint8)).show()
+        pil_image = Image.fromarray((np.asarray(image) * 255).astype(np.uint8))
+        plt.figure(figsize=(10, 5))
+        plt.imshow(pil_image)
+        plt.title(title)
+        plt.show()
+

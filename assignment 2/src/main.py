@@ -62,7 +62,7 @@ def section_four(*args, **kwargs):
 
 
 def section_five(**kwargs):
-    data = kwargs.get('data', section_one())
+    data = kwargs.get('json', section_one())
     cumulative_sum = section_three(data)
     new_image_array = np.zeros(data.shape)
     for i in range(data.shape[0]):

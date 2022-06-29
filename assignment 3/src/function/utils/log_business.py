@@ -33,11 +33,14 @@ class ColoredFormatter(logging.Formatter):
 
 
 class MyLogger:
-    def __init__(self, name):
+    def __init__(self, name, address=None):
         colorama.init(autoreset=True)
         self.logger = logging.getLogger(name)
         handler = logging.StreamHandler()
         handler.setFormatter(ColoredFormatter("%(asctime)s|%(levelname)s|%(name)s|%(message)s"))
+        if address:
+            file_handler = logging.FileHandler(address)
+            self.logger.addHandler(file_handler)
         self.logger.addHandler(handler)
         self.logger.setLevel(logging.DEBUG)
 
