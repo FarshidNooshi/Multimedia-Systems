@@ -1,5 +1,6 @@
 {
   "image_path": "assets/image/input/photo.png",
   "chroma_subsampling": "4:2:0",
-  "log_path": "log/log_file.log"
+  "log_path": "log/log_file.log",
+  "output_path": "output/"
 }

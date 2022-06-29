@@ -36,38 +36,40 @@ class RlcFunction:
     def encode(self, array):
         """
         Encodes an array to RLC (Run Length Code)
-        format for DC components is <size><amplitude>
-        format for AC components is <run_length, size> <Amplitude of non-zero>
         """
         self.logger.info('Encoding array')
         encoded = []
         run_length = 0
         eob = ("EOB",)
         for i in range(len(array)):
+            trimmed = self.trim(array[i])
             for j in range(len(array[i])):
-                trimmed = self.trim(array[i])
                 if j == len(trimmed):
                     encoded.append(eob)
                     break
-                if i == 0 and j == 0:
-                    encoded.append((int(trimmed[j]).bit_length(), trimmed[j]))
-                elif j == 0:
-                    diff = int(array[i][j] - array[i - 1][j])
-                    if diff != 0:
-                        encoded.append((diff.bit_length(), diff))
-                    else:
-                        encoded.append((1, diff))
-                    run_length = 0
-                elif trimmed[j] == 0:
-                    run_length += 1
-                else:
-                    encoded.append((run_length, int(trimmed[j]).bit_length(), trimmed[j]))
-                    run_length = 0
-                # send EOB
-            if not (encoded[len(encoded) - 1] == eob):
+                run_length = self.__relax_next(array, encoded, i, j, run_length, trimmed)
+            if not (encoded[-1] == eob):
                 encoded.append(eob)
-        self.logger.info('Encoded array: {}'.format(encoded))
+        self.logger.info('Encoded array length: {}'.format(len(encoded)))
         return encoded
+
+    @staticmethod
+    def __relax_next(array, encoded, i, j, run_length, trimmed):
+        if i == 0 and j == 0:
+            encoded.append((int(trimmed[j]).bit_length(), trimmed[j]))
+        elif j == 0:
+            diff = int(array[i][j] - array[i - 1][j])
+            if diff != 0:
+                encoded.append((diff.bit_length(), diff))
+            else:
+                encoded.append((1, diff))
+            run_length = 0
+        elif trimmed[j] == 0:
+            run_length += 1
+        else:
+            encoded.append((run_length, int(trimmed[j]).bit_length(), trimmed[j]))
+            run_length = 0
+        return run_length
 
     def encode_image(self, image):
         """
@@ -132,13 +134,15 @@ class ZigZagMovementFunction:
         board = args[0]
         window_size = args[1]
         height, width = board.shape
-        matrix = np.array((height * width, window_size * window_size))
-        for i in range(height):
-            for j in range(width):
-                matrix[i * width + j] = self.__call__(board[i:i + window_size, j:j + window_size])
+        matrix = np.zeros(((height * width), window_size * window_size))
+        self.logger.info('Converting board to zigzag vector')
+        for i in range(0, height, window_size):
+            for j in range(0, width, window_size):
+                matrix[i * width + j] += self.get_zigzag_vectors(board[i:i + window_size, j:j + window_size])
         return matrix
 
-    def get_zigzag_vectors(self, board):
+    @staticmethod
+    def get_zigzag_vectors(board):
         """
         Converts a board to a zigzag vector
 
@@ -153,7 +157,6 @@ class ZigZagMovementFunction:
                 out : :py:class:`np.ndarray`
                     np.ndarray of shape (height * width) of zigzag vector
         """
-        self.logger.debug('Converting 8*8 board to zigzag vector')
         zigzag = [
             board[0][0], board[0][1], board[1][0], board[2][0], board[1][1], board[0][2],
             board[0][3], board[1][2], board[2][1], board[3][0], board[4][0], board[3][1],
@@ -168,4 +171,4 @@ class ZigZagMovementFunction:
             board[5][7], board[6][7], board[7][6], board[7][7]
         ]
 
-        return zigzag
+        return np.array(zigzag).astype(np.int8)

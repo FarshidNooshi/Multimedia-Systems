@@ -1,5 +1,6 @@
 import json
 import os.path
+import pickle
 
 import numpy as np
 from PIL import Image
@@ -66,4 +67,34 @@ class FileBusiness:
         plt.imshow(pil_image)
         plt.title(title)
         plt.show()
+
+    def save_image(self, image_layers, filepath):
+        """
+        Saves an image to a filepath with pickle library
+
+            Parameters
+            ----------
+                image_layers : list[:py:class:`np.ndarray`]
+                    list of layers of the image
+                filepath : str
+                    filepath of the image
+        """
+        self.logger.info('Saving image')
+        with open(filepath, 'wb') as file:
+            pickle.dump(image_layers, file, protocol=pickle.HIGHEST_PROTOCOL)
+
+    def save_codes(self, dicts, filepath):
+        """
+        Saves a list of dictionaries to a filepath with pickle library
+
+            Parameters
+            ----------
+                dicts : list[dict]
+                    list of dictionaries
+                filepath : str
+                    filepath of the codes
+        """
+        self.logger.info('Saving codes')
+        with open(filepath, 'wb') as file:
+            pickle.dump(dicts, file, protocol=pickle.HIGHEST_PROTOCOL)
 

@@ -77,7 +77,9 @@ class Huffman:
                 out : str
                     encoded character
         """
-        if tree.symbols is not None:
+        if tree.symbols:
+            if char in tree.symbols and tree.symbols == {char}:
+                return ''
             if char in tree.left.symbols:
                 return '0' + self.encode(tree.left, char)
             elif char in tree.right.symbols:
