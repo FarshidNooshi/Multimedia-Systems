@@ -11,31 +11,102 @@ class RlcFunction:
     def __init__(self, log_path):
         self.logger = MyLogger('assignment3.function.rlc_function.RlcFunction', log_path)
 
-    def encode(self, vector):
+    @staticmethod
+    def trim(array):
         """
-        Encodes a vector to RLC (Run Length Code)
-        """
-        rlc_vector = []
-        current_run_length = 1
-        for i in range(1, len(vector)):
-            if vector[i] == vector[i - 1]:
-                current_run_length += 1
-            else:
-                rlc_vector.append(current_run_length)
-                rlc_vector.append(vector[i - 1])
-                current_run_length = 1
-        rlc_vector.append(current_run_length)
-        rlc_vector.append(vector[-1])
-        return rlc_vector
+        Trims the array to remove the zeros at the end of the array
 
-    def decode(self, rlc_vector):
+            Parameters
+            ----------
+                array : :py:class:`np.ndarray`
+                    numpy array of one layer of image
+
+            Returns
+            -------
+                out : :py:class:`np.ndarray`
+                    numpy array of one layer of image without the zeros at the beginning of the array
         """
-        Decodes a RLC vector to a vector
+        trimmed = np.trim_zeros(array, 'b')
+
+        if len(trimmed) == 0:
+            trimmed = np.zeros(1)
+
+        return trimmed
+
+    def encode(self, array):
         """
-        vector = []
-        for i in range(0, len(rlc_vector), 2):
-            vector.extend([rlc_vector[i + 1]] * rlc_vector[i])
-        return vector
+        Encodes an array to RLC (Run Length Code)
+        format for DC components is <size><amplitude>
+        format for AC components is <run_length, size> <Amplitude of non-zero>
+        """
+        self.logger.info('Encoding array')
+        encoded = []
+        run_length = 0
+        eob = ("EOB",)
+        for i in range(len(array)):
+            for j in range(len(array[i])):
+                trimmed = self.trim(array[i])
+                if j == len(trimmed):
+                    encoded.append(eob)
+                    break
+                if i == 0 and j == 0:
+                    encoded.append((int(trimmed[j]).bit_length(), trimmed[j]))
+                elif j == 0:
+                    diff = int(array[i][j] - array[i - 1][j])
+                    if diff != 0:
+                        encoded.append((diff.bit_length(), diff))
+                    else:
+                        encoded.append((1, diff))
+                    run_length = 0
+                elif trimmed[j] == 0:
+                    run_length += 1
+                else:
+                    encoded.append((run_length, int(trimmed[j]).bit_length(), trimmed[j]))
+                    run_length = 0
+                # send EOB
+            if not (encoded[len(encoded) - 1] == eob):
+                encoded.append(eob)
+        self.logger.info('Encoded array: {}'.format(encoded))
+        return encoded
+
+    def encode_image(self, image):
+        """
+        Encodes an image to RLC (Run Length Code)
+        """
+        self.logger.info('Encoding image')
+        y, cb, cr = self.convert(image, 'YCbCr')
+        y_encoded = self.encode(y)
+        cb_encoded = self.encode(cb)
+        cr_encoded = self.encode(cr)
+        self.logger.info('Encoded image: {}'.format([y_encoded, cb_encoded, cr_encoded]))
+        return [y_encoded, cb_encoded, cr_encoded]
+
+    def convert(self, image, mode):
+        """
+        returns different channels of an image with the specified mode
+
+            Parameters
+            ----------
+                image : list
+                    list of np.ndarray of shape (height, width) of image
+                mode : str
+                    'YCbCr' or 'RGB'
+            Returns
+            -------
+                out : list
+                    list of channels of image with np.ndarray of shape (height, width) of image in the specified mode (YCbCr or RGB)
+
+            Raises
+            ------
+                ValueError
+                    if mode is not 'YCbCr' or 'RGB'
+        """
+        self.logger.info('Converting image to {} format'.format(mode))
+        if mode == 'YCbCr':
+            return image[0], image[1], image[2]
+        elif mode == 'RGB':
+            return image[0], image[1], image[2]
+        raise ValueError('Invalid mode')
 
 
 class ZigZagMovementFunction:
