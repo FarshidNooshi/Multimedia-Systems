@@ -30,43 +30,43 @@ class QuantifyingFunction:
     def __init__(self, log_path):
         self.logger = MyLogger('assignment3.utils.quantifying_function', log_path)
 
-    def quantize(self, image):
-        window_size = len(QTC[0])
-        if self.check_for_padding(image, window_size):
-            y_padded, cb_padded, cr_padded = self.pad_image(image, window_size)
+    def quantize(self, layers):
+        window_size = len(QTC)
+        if self.check_for_padding(layers, window_size):
+            y_padded, cb_padded, cr_padded = self.pad_image(layers, window_size)
             y, cb, cr = self.perform_dct([y_padded, cb_padded, cr_padded], window_size)
         else:
-            y, cb, cr = self.perform_dct([image[:, :, 0], image[:, :, 1], image[:, :, 2]], window_size)
+            y, cb, cr = self.perform_dct(layers, window_size)
         return self.quantify_image([y, cb, cr], window_size)
 
     @staticmethod
-    def check_for_padding(image, window_size):
-        y, cb, cr = image[:, :, 0], image[:, :, 1], image[:, :, 2]
-        if len(y[0]) % window_size != 0 or len(cb[0]) % window_size != 0 or len(cr[0]) % window_size != 0:
+    def check_for_padding(layers, window_size):
+        y, cb, cr = layers[0], layers[1], layers[2]
+        if len(y) % window_size != 0 or len(cb) % window_size != 0 or len(cr) % window_size != 0:
             return True
-        if len(y[1]) % window_size != 0 or len(cb[1]) % window_size != 0 or len(cr[1]) % window_size != 0:
+        if len(y[0]) % window_size != 0 or len(cb[0]) % window_size != 0 or len(cr[0]) % window_size != 0:
             return True
         return False
 
     @staticmethod
-    def pad_image(image, window_size):
+    def pad_image(layers, window_size):
         """
         Pads the image with zeros to make it divisible by window_size in both dimensions
 
             Parameters
             ----------
-                image : :py:class:`np.ndarray`
-                    np.ndarray or of shape (height, width, 3) of image
+                layers : list[numpy.ndarray]
+                    List of layers to pad
                 window_size : int
                     size of the window
 
             Returns
             -------
-                out : tuple[:py:class:`np.ndarray`, :py:class:`np.ndarray`, :py:class:`np.ndarray`]
-                    tuple of three numpy arrays of for Y, Cr, Cb after padding
+                out : list[:py:class:`np.ndarray`, :py:class:`np.ndarray`, :py:class:`np.ndarray`]
+                    list of three numpy arrays of for Y, Cr, Cb after padding
         """
-        for layer in range(3):
-            image_layer = image[:, :, layer]
+        for layer in layers:
+            image_layer = layer.copy()
             if len(image_layer) % window_size != 0:
                 new_block = np.zeros((window_size - (len(image_layer) % window_size), len(image_layer[0])))
                 image_layer = np.concatenate((image_layer, new_block), axis=0)
