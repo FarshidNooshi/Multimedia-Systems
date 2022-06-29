@@ -1,9 +1,6 @@
-import os.path
-
 import numpy as np
 from scipy.signal import convolve2d
 
-from .utils.file_business import FileBusiness
 from .utils.log_business import MyLogger
 
 
@@ -44,6 +41,8 @@ class SamplingFunction:
         return y, cr, cb
 
     def __sample_422(self, y, cr, cb):
+        """
+        """
         y = y - 128
         cr = cr - 128
         cb = cb - 128
