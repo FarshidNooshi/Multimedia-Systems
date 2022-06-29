@@ -2,17 +2,27 @@ from .utils.log_business import MyLogger
 
 
 class Node:
-    def __init__(self, char, freq):
-        self.char = char
+    def __init__(self, symbol, freq):
+        """
+        Initializes a node with a character and frequency
+
+            Parameters
+            ----------
+                symbol : set of str
+                    set of symbols of the node`s children
+                freq : double
+                    frequency of the character
+        """
+        self.symbols = symbol
         self.freq = freq
         self.left = None
         self.right = None
 
     def __str__(self):
-        return f"{self.char}:{self.freq}"
+        return f"{self.symbols}:{self.freq}"
 
     def __repr__(self):
-        return f"{self.char}:{self.freq}"
+        return f"{self.symbols}:{self.freq}"
 
 
 class Huffman:
@@ -36,17 +46,19 @@ class Huffman:
         self.logger.info('creating tree')
         nodes = []
         for char, freq in freq_dict.items():
-            node = Node(char, freq)
-            nodes.append(node)
+            nodes.append(Node({char}, freq))
+        self.logger.debug('nodes list created')
         nodes.sort(key=lambda x: x.freq)
+        self.logger.debug('ready to create tree')
         while len(nodes) > 1:
             node1 = nodes.pop(0)
             node2 = nodes.pop(0)
-            node3 = Node(None, node1.freq + node2.freq)
+            node3 = Node(node1.symbols.union(node2.symbols), node1.freq + node2.freq)
             node3.left = node1
             node3.right = node2
             nodes.append(node3)
             nodes.sort(key=lambda x: x.freq)
+        self.logger.debug('tree created')
         return nodes[0]
 
     def encode(self, tree, char):
@@ -65,13 +77,16 @@ class Huffman:
                 out : str
                     encoded character
         """
-        if tree.char is not None:
-            if char == '0':
-                return self.encode(tree.left, char)
+        if tree.symbols is not None:
+            if char in tree.left.symbols:
+                return '0' + self.encode(tree.left, char)
+            elif char in tree.right.symbols:
+                return '1' + self.encode(tree.right, char)
             else:
-                return self.encode(tree.right, char)
+                self.logger.error(f'character {char} not in tree')
+                raise ValueError(f'{char} not in tree')
         else:
-            return tree.char  #  ''
+            return ''
 
     def decode(self, tree, code):
         """
@@ -89,39 +104,40 @@ class Huffman:
                 out : str
                     decoded character
         """
-        if tree.char is None:
+        if tree.symbols is None:
             if code[0] == '0':
                 return self.decode(tree.left, code[1:])
             else:
                 return self.decode(tree.right, code[1:])
         else:
-            return tree.char
+            return tree.symbols
 
-    def encode_file(self, filepath, output_filepath):
+    def encode_array(self, array):
         """
-        Encodes a file using a tree
+        Encodes an array of characters using a tree
 
             Parameters
             ----------
-                filepath : str
-                    filepath of the file to encode
-                output_filepath : str
-                    filepath of the output file
+                array : list of str
+                    list of characters to encode
+
+            Returns
+            -------
+                out : dict
+                    dictionary of characters and their encoded codes
         """
-        self.logger.info('encoding file')
-        with open(filepath, 'r') as f:
-            text = f.read()
+        self.logger.info('encoding array')
         freq_dict = {}
-        for char in text:
+        for char in array:
             if char in freq_dict:
                 freq_dict[char] += 1
             else:
                 freq_dict[char] = 1
+        self.logger.debug('frequency dictionary created')
         tree = self.create_tree(freq_dict)
-        encoded_text = ''
-        for char in text:
-            encoded_text += self.encode(tree, char)
-        with open(output_filepath, 'w') as f:
-            f.write(encoded_text)
-        self.logger.info('file encoded')
-
+        self.logger.debug('tree created')
+        encoded_dict = {}
+        for char in freq_dict:
+            encoded_dict[char] = self.encode(tree, char)
+        self.logger.debug('encoded dictionary created')
+        return encoded_dict
