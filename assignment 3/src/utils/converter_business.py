@@ -99,8 +99,8 @@ class ConverterBusiness:
                                      [-0.168736, -0.331264, 0.5],
                                      [0.5, -0.418688, -0.081312]])
         mult = np.dot(image, transform_matrix.T)
-        mult[:, :, 1:2] += 128
-        return mult
+        mult[:, :, 1:3] += 128
+        return mult.astype(np.uint8)
 
     @staticmethod
     def __convert_to_rgb(image):
@@ -121,7 +121,7 @@ class ConverterBusiness:
                                      [1, -0.34414, -0.71414],
                                      [1, 1.772, 0]])
         rgb_arr = image.astype(np.float32)
-        rgb_arr[:, :, 1:2] -= 128
+        rgb_arr[:, :, 1:3] -= 128
         mult = np.dot(image, transform_matrix.T)
         mult.putmask(mult > 255, 255)
         mult.putmask(mult < 0, 0)

@@ -1,6 +1,7 @@
 import json
 import os.path
 
+import numpy as np
 from PIL import Image
 
 from .log_business import MyLogger
@@ -48,3 +49,15 @@ class FileBusiness:
             config = data
         self.logger.info('config file read')
         return config
+
+    def show_image(self, image):
+        """
+        Shows an image
+
+            Parameters
+            ----------
+                image : :py:class:`np.ndarray`
+                    image with shape (height, width, 3) in RGB format
+        """
+        self.logger.info('Showing image')
+        return Image.fromarray((np.asarray(image) * 255).astype(np.uint8)).show()
