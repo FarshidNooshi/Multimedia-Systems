@@ -50,6 +50,6 @@ if __name__ == '__main__':
     logger.debug('cb shape: {}'.format(cb.shape))
     logger.debug('cr shape: {}'.format(cr.shape))
 
-
+    # zig-zag movement
 
 
