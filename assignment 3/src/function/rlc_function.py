@@ -36,9 +36,20 @@ class RlcFunction:
     def encode(self, array):
         """
         Encodes an array to RLC (Run Length Code)
+
+            Parameters
+            ----------
+                array : :py:class:`np.ndarray`
+                    numpy array of one layer of image
+
+            Returns
+            -------
+                out : :py:class:`np.ndarray`
+                    numpy array of one layer of image encoded to RLC
         """
         self.logger.info('Encoding array')
-        encoded = []
+        array = array.astype(np.float32)
+        encoded = list()
         run_length = 0
         eob = ("EOB",)
         for i in range(len(array)):
@@ -74,6 +85,17 @@ class RlcFunction:
     def encode_image(self, image):
         """
         Encodes an image to RLC (Run Length Code)
+
+            Parameters
+            ----------
+                image : list
+                    list of np.ndarray of shape (height, width) of image
+
+            Returns
+            -------
+                out : list
+                    list of channels of image encoded to RLC with np.ndarray of shape (height, width) of image
+
         """
         self.logger.info('Encoding image')
         y, cb, cr = self.convert(image, 'YCbCr')
@@ -134,11 +156,14 @@ class ZigZagMovementFunction:
         board = args[0]
         window_size = args[1]
         height, width = board.shape
+        height = int(height / window_size)
+        width = int(width / window_size)
         matrix = np.zeros(((height * width), window_size * window_size))
         self.logger.info('Converting board to zigzag vector')
-        for i in range(0, height, window_size):
-            for j in range(0, width, window_size):
-                matrix[i * width + j] += self.get_zigzag_vectors(board[i:i + window_size, j:j + window_size])
+        for i in range(0, height):
+            for j in range(0, width):
+                matrix[i * j] += self.get_zigzag_vectors(
+                    board[i * window_size:i * window_size + window_size, j * window_size:j * window_size + window_size])
         return matrix
 
     @staticmethod
@@ -171,4 +196,4 @@ class ZigZagMovementFunction:
             board[5][7], board[6][7], board[7][6], board[7][7]
         ]
 
-        return np.array(zigzag).astype(np.int8)
+        return zigzag

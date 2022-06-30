@@ -67,6 +67,7 @@ if __name__ == '__main__':
     y = zigzag(y, window_size).astype(np.uint16)
     cb = zigzag(cb, window_size).astype(np.uint16)
     cr = zigzag(cr, window_size).astype(np.uint16)
+    # y, cb, cr = zigzag(y, cb, cr, 8)
     logger.debug('y shape: {}'.format(y.shape))
     logger.debug('cb shape: {}'.format(cb.shape))
     logger.debug('cr shape: {}'.format(cr.shape))
@@ -96,10 +97,11 @@ if __name__ == '__main__':
 
     # calculate the compression ratio
     logger.debug('Calculating compression ratio')
-    number_of_y_used_bits = sum([int(y_huffman[value], 2) for value in y_encoded])
-    number_of_cb_used_bits = sum([int(cb_huffman[value], 2) for value in cb_encoded])
-    number_of_cr_used_bits = sum([int(cr_huffman[value], 2) for value in cr_encoded])
-    compression_ratio = totalNumberOfBitsWithoutCompression / (
-                number_of_y_used_bits + number_of_cb_used_bits + number_of_cr_used_bits)
+    y_bits = ''.join([y_huffman[value] for value in y_encoded])
+    cb_bits = ''.join([cb_huffman[value] for value in cb_encoded])
+    cr_bits = ''.join([cr_huffman[value] for value in cr_encoded])
+    compression_ratio = np.round(totalNumberOfBitsWithoutCompression / (len(y_bits) + len(cb_bits) + len(cr_bits)), 2)
+    logger.critical(f'Compressed image size: {np.round((len(y_bits) + len(cb_bits) + len(cr_bits)) / 1024)} kb')
+    logger.critical(f'size before compression: {np.round(totalNumberOfBitsWithoutCompression / 1024)} kb')
     logger.critical(f'Compression ratio: {compression_ratio}')
     ####################################################################################################################
