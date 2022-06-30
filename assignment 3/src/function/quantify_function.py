@@ -13,7 +13,6 @@ QTY = np.array([
     [72, 92, 95, 98, 112, 100, 103, 99]
 ])
 
-# chrominance quantization table
 QTC = np.array([
     [17, 18, 24, 47, 99, 99, 99, 99],
     [18, 21, 26, 66, 99, 99, 99, 99],
@@ -77,6 +76,21 @@ class QuantifyingFunction:
 
     @staticmethod
     def perform_dct(layers, windows_size):
+        """
+        Performs DCT on the layers
+
+            Parameters
+            ----------
+                layers : list[numpy.ndarray]
+                    List of layers to perform DCT on
+                windows_size : int
+                    size of the window
+
+            Returns
+            -------
+                out : list[:py:class:`np.ndarray`, :py:class:`np.ndarray`, :py:class:`np.ndarray`]
+                    list of three numpy arrays of for Y, Cb, Cr after DCT
+        """
         layers_dct_list = []
         height = len(layers[0])
         width = len(layers[0][0])
@@ -92,6 +106,21 @@ class QuantifyingFunction:
 
     @staticmethod
     def quantify_image(layers, windows_size):
+        """
+        Quantifies the image using the quantization table
+
+            Parameters
+            ----------
+                layers : list[:py:class:`np.ndarray`, :py:class:`np.ndarray`, :py:class:`np.ndarray`]
+                    list of three numpy arrays of for Y, Cb, Cr
+                windows_size : int
+                    size of the window
+
+            Returns
+            -------
+                out : list[:py:class:`np.ndarray`, :py:class:`np.ndarray`, :py:class:`np.ndarray`]
+                    list of three numpy arrays of for Y, Cb, Cr after quantification
+        """
         layers_quantified_list = []
         height = len(layers[0])
         width = len(layers[0][0])
