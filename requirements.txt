@@ -1,0 +1,7 @@
+setuptools~=57.0.0
+manim~=0.14.0
+numpy~=1.22.2
+Pillow~=9.0.1
+matplotlib~=3.5.1
+colorama~=0.4.4
+scipy~=1.8.0
