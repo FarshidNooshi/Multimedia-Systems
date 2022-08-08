@@ -4,4 +4,15 @@
 
 # assignment 2
 
-This assignment is for Multimedia Histogram equalizer algorithm implementation.
+## Image-histogram-systematization
+
+Image histogram systematization, my multimedia systems course
+
+
+### Result
+
+#### Input:
+<img src="./assets/image.png" />
+
+#### Output:
+<img src="./result/output.png" />
