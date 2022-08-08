@@ -15,4 +15,4 @@ Image histogram systematization, my multimedia systems course
 <img src="./assets/image.png" />
 
 #### Output:
-<img src="./assets/result/sample_result.png" />
+<img src="./assets/results/result_main.png" />
