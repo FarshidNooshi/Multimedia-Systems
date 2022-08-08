@@ -26,8 +26,21 @@ algorithms are implemented from scratch. A brief description of the assignment i
 ### Assignment 3: [Assignment 3](https://github.com/FarshidNooshi/Multi-Media-Systems/tree/master/assignment%203)
     
 this assignment was to create JPEG compression system. I have prepared a simple JPEG compression system with the
-help of the different libraries. algorithms of the JPEG compression system are implemented from scratch. 
+help of the different libraries. algorithms of the JPEG compression system are implemented from scratch.
+The Compression is done with **the YCrCb, Chroma Subsampling, Quantization, RLC and Huffman algorithms.**\
 A brief description of the assignment is available in the `README.md` file of the assignment.
+
+---
+
+### Final Project: [Final Project](https://github.com/CEIT-AUT/hollyworld)
+    
+This Project was for building an IMDB website clone using **Docker, Dash Protocol for streaming online and chunking data, Angular Framework for Frontend, SQLite for Database and GoLang for Backend**
+
+for Chunking Data and streaming online we used Dash Protocol and Python FFmpeg Video Streaming Library.
+#### Approaches for online streaming
+* plain VoD for streaming videos 
+* implementation of our own backend server for Dash protocol and streaming
+* using HLS protocol and VoD for streaming
 
 # Contributors
 * [Farshid Nooshi](https:/ce.aut.ac.ir/~Farshid_Nooshi)
