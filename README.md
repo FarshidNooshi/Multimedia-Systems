@@ -5,7 +5,7 @@
 # Multi Media Systems
 
 This repository contains the full collection of assignments for the course:\
-**CE363 - Multimedia Systems.**
+**CE363 - Multimedia Systems**
 
 ## Assignments
 
