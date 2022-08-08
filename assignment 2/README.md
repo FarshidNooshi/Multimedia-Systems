@@ -6,7 +6,7 @@
 
 ## Image-histogram-systematization
 
-Image histogram systematization, my multimedia systems course
+Image histogram systematization, my MultiMedia systems course assignment
 
 
 ### Result
