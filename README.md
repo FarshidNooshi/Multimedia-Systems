@@ -38,9 +38,9 @@ This Project was for building an IMDB website clone using **Docker, Dash Protoco
 
 for Chunking Data and streaming online we used Dash Protocol and Python FFmpeg Video Streaming Library.
 #### Approaches for online streaming
-* plain VoD for streaming videos 
-* implementation of our own backend server for Dash protocol and streaming
-* using HLS protocol and VoD for streaming
+* **plain VoD** for streaming videos 
+* implementation of our own backend server for **Dash protocol**
+* using **HLS protocol and VoD**
 
 # Contributors
 * [Farshid Nooshi](https:/ce.aut.ac.ir/~Farshid_Nooshi)
