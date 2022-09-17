@@ -44,4 +44,4 @@ for Chunking Data and streaming online we used Dash Protocol and Python FFmpeg V
 * using **HLS protocol and VoD**
 
 # Contributors
-* [Farshid Nooshi](https:/ce.aut.ac.ir/~Farshid_Nooshi)
+* [Farshid Nooshi](https://ce.aut.ac.ir/~Farshid_Nooshi)
