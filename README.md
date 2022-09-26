@@ -2,7 +2,7 @@
   <h1>In The Name Of GOD</h1>
 </div>
 
-# Multi Media Systems
+# Multimedia Systems
 
 This repository contains the full collection of assignments for the course:\
 **CE363 - Multimedia Systems**
